@@ -1,7 +1,28 @@
-<script>
+<script lang="ts">
 	import Counter from './Counter.svelte';
 	import welcome from '$lib/images/svelte-welcome.webp';
 	import welcome_fallback from '$lib/images/svelte-welcome.png';
+	import { onMount } from 'svelte';
+	import jwt_decode from "jwt-decode";
+	import { env } from '$env/dynamic/public';
+
+	onMount( () => {
+		google.accounts.id.initialize({
+      		client_id: env.PUBLIC_GOOGLE_AUTH ?? '',
+      		callback: function (res: any) {
+				const user = jwt_decode(res.credential);
+				console.log(user);
+	  		}
+    	});
+    	google.accounts.id.prompt();
+
+		google.accounts.id.renderButton(
+			document.getElementById("signinDiv")!, {
+				theme: 'outline',
+				size: 'large',
+				type: 'standard',
+    	});
+	});
 </script>
 
 <svelte:head>
@@ -26,6 +47,7 @@
 	</h2>
 
 	<Counter />
+	<div id='signinDiv'></div>
 </section>
 
 <style>
