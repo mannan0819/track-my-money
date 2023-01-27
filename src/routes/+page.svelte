@@ -3,25 +3,31 @@
 	import welcome from '$lib/images/svelte-welcome.webp';
 	import welcome_fallback from '$lib/images/svelte-welcome.png';
 	import { onMount } from 'svelte';
-	import jwt_decode from "jwt-decode";
+	import jwt_decode from 'jwt-decode';
 	import { env } from '$env/dynamic/public';
+	import { user } from '../store/user';
 
-	onMount( () => {
+	onMount(() => {
 		google.accounts.id.initialize({
-      		client_id: env.PUBLIC_GOOGLE_AUTH ?? '',
-      		callback: function (res: any) {
-				const user = jwt_decode(res.credential);
-				console.log(user);
-	  		}
-    	});
-    	google.accounts.id.prompt();
+			client_id: env.PUBLIC_GOOGLE_AUTH ?? '',
+			callback: function (res) {
+				const user1: any = jwt_decode(res.credential);
+				console.log(user1);
+				user.set({
+					id: user1.sub,
+					name: user1.name,
+					email: user1.email,
+					avatar: user1.picture
+				});
+			}
+		});
+		google.accounts.id.prompt();
 
-		google.accounts.id.renderButton(
-			document.getElementById("signinDiv")!, {
-				theme: 'outline',
-				size: 'large',
-				type: 'standard',
-    	});
+		google.accounts.id.renderButton(document.getElementById('signinDiv')!, {
+			theme: 'outline',
+			size: 'large',
+			type: 'standard'
+		});
 	});
 </script>
 
@@ -47,7 +53,11 @@
 	</h2>
 
 	<Counter />
-	<div id='signinDiv'></div>
+	{#if $user && $user.id}
+		<h2>Welcome {$user.name}</h2>
+	{:else}
+		<div id="signinDiv" />
+	{/if}
 </section>
 
 <style>

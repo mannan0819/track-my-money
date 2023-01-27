@@ -2,6 +2,7 @@
 	import { page } from '$app/stores';
 	import logo from '$lib/images/svelte-logo.svg';
 	import github from '$lib/images/github.svg';
+	import { user } from '../store/user';
 </script>
 
 <header>
@@ -32,9 +33,15 @@
 	</nav>
 
 	<div class="corner">
-		<a href="https://github.com/sveltejs/kit">
-			<img src={github} alt="GitHub" />
-		</a>
+		{#if $user && $user.avatar}
+			<a href="https://github.com/sveltejs/kit">
+				<img src={$user.avatar} alt="GitHub" />
+			</a>
+		{:else}
+			<a href="https://github.com/sveltejs/kit">
+				<img src={github} alt="GitHub" />
+			</a>
+		{/if}
 	</div>
 </header>
 
@@ -60,6 +67,7 @@
 	.corner img {
 		width: 2em;
 		height: 2em;
+		border-radius: 20rem;
 		object-fit: contain;
 	}
 
