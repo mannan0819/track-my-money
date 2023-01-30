@@ -10,7 +10,7 @@
 	onMount(() => {
 		google.accounts.id.initialize({
 			client_id: env.PUBLIC_GOOGLE_AUTH ?? '',
-			callback: function (res) {
+			callback: async (res) => {
 				const user1: any = jwt_decode(res.credential);
 				console.log(user1);
 				user.set({
@@ -18,6 +18,13 @@
 					name: user1.name,
 					email: user1.email,
 					avatar: user1.picture
+				});
+				const response = await fetch('/api', {
+					method: 'POST',
+					body: JSON.stringify({ email: user1.email, googleid: user1.sub }),
+					headers: {
+						'content-type': 'application/json'
+					}
 				});
 			}
 		});

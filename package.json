@@ -32,6 +32,7 @@
 	"type": "module",
 	"dependencies": {
 		"@types/google.accounts": "^0.0.5",
-		"jwt-decode": "^3.1.2"
+		"jwt-decode": "^3.1.2",
+		"mongoose": "^6.9.0"
 	}
 }
